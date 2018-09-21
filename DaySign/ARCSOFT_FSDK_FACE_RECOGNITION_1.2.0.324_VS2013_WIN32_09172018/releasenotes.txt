@@ -1,0 +1,46 @@
+////////////////////////////////////////////////////////////////////////////////
+//                   ArcSoft Face Recognition Library 		              //        
+////////////////////////////////////////// /////////////////////////////////////
+
+Introduction:
+ArcSoft Face Recognition Library provides the universal interfaces to identify or verify the ID of one person based on his face picture.
+
+Publish date:
+09/17/2018
+
+
+Version:
+1.2.0.324
+
+Supported platform:
+VS2013_WIN32
+
+Compile Options:
+default
+
+Dependency:
+none
+
+Known issues:
+None.
+
+File List:
+|---doc
+|   |---ARCSOFT_FACE_RECOGNITION_DEVELOPER'S_GUIDE.pdf Developer's user guide document
+|---inc
+|   |---arcsoft_fsdk_face_recognition.h                Head file for face recognition
+|   |---amcomdef.h                                     Head file for platform type definition  
+|   |---ammem.h                                        Header file for platform memory management
+|   |---asvloffscreen.h                                Header file for image format definition
+|   |---merror.h                                       Header file for error definition
+|   |
+|---lib
+|   |---libarcsoft_fsdk_face_recognition.dll           Dynamic library file for face recognition engine
+|   |---libarcsoft_fsdk_face_recognition.lib           Library file for face recognition engine
+|   |
+|---samplecode
+|   |---samplecode.cpp                                 Sample codes
+|---releasenotes.txt                                   This file.
+
+Change Logs:
+Initial version
