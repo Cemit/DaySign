@@ -46,29 +46,13 @@ namespace DaySign
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Manager.GetManager().SetVideoPhoto(pictureBox1);
 
-            bool hasFace = Manager.GetManager().CheckFace(pictureBox1);
-            if (hasFace)
-            {
-                timer1.Stop();
-                byte[] data = Manager.GetManager().GetFaceData(pictureBox1);
-                if (data != null)
-                {
-                    Debug.AddData(data);
-                }
-                else
-                {
-                    timer1.Start();
-                }
-            }
 
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //Debug.ErrorLog();
-
+            Manager.GetManager().SetShowPhotoTimerTick(timer1, pictureBox1);
         }
     }
 }

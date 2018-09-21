@@ -11,7 +11,11 @@ namespace DaySign
     enum ErrorType
     {
         [Description("输入数据格式错误")]
-        inputError
+        inputError,
+        [Description("读取数据为空")]
+        readNull,
+        [Description("读取数据异常")]
+        readError
     }
     class Error : LogBase
     {
@@ -26,6 +30,11 @@ namespace DaySign
         static public void Log(string log)
         {
             error.AddLog(error.GetErrorClass(2), log);
+        }
+
+        static public void Log(ErrorType type, string log)
+        {
+            error.AddLog(error.GetErrorClass(2), type.GetText() + " " + log);
         }
 
         public override void AddLog(ErrorClass errorClass, string log)

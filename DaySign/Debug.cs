@@ -31,7 +31,7 @@ namespace DaySign
             public string _name;
             public byte[] _face;
              * */
-            string[] data = { "999", "15软件1", "LanQ", faceByte.GetString() };
+            string[] data = { "998", "15软件1", "海涛", faceByte.GetString() };
             string[] head = { "_uid", "_class", "_name", "_face" };
             accessData.AddData(head, data);
         }

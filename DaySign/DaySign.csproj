@@ -76,6 +76,8 @@
   <ItemGroup>
     <Compile Include="AccessData.cs" />
     <Compile Include="Error.cs" />
+    <Compile Include="FaceData.cs" />
+    <Compile Include="IStringStruct.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogBase.cs" />
     <Compile Include="StringExpand.cs" />

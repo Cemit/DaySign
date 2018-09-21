@@ -92,12 +92,13 @@ namespace DaySign
             int i = 0;
             foreach (DataRow item in dt.Rows)
             {
-                int j = 0;
-                foreach (object o in item.ItemArray)
+                int length = item.ItemArray.Length;
+                string[] lineData = new string[length];
+                for (int j = 0; j < length; j++)
                 {
-                    obj[i][j++] = o.ToString();
+                    lineData[j] = item.ItemArray[j].ToString();
                 }
-                i++;
+                obj[i++] = lineData;
             }
             return obj;
         }

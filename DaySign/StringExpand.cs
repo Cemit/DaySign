@@ -107,6 +107,7 @@ namespace DaySign
             return s;
         }
 
+        //将十六进制文本转换为比特数组
         public static byte[] GetByte(this string str)
         {
             if (str.Length % 2 != 0)
@@ -115,11 +116,11 @@ namespace DaySign
                 return null;
             }
             byte[] ret = new byte[str.Length / 2];
-            for (int i = 0; i < str.Length; i += 2)
+            for (int i = 0, j = 0; i < str.Length; i += 2, j++)
             {
                 string hexStr = str[i].ToString() + str[i + 1].ToString();
                 int decInt = Convert.ToInt32(hexStr, 16);
-                ret[i] = Convert.ToByte(decInt);
+                ret[j] = Convert.ToByte(decInt);
             }
             return ret;
         }
