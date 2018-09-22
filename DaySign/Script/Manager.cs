@@ -173,7 +173,7 @@ namespace DaySign
             bool hasSuit = false;
             foreach (var item in sqlFaces)
             {
-                //Console.WriteLine(faceFR.CompareFace(byteData, item._face));
+                Console.WriteLine(faceFR.CompareFace(byteData, item._face));
                 if (faceFR.CompareFace(byteData, item._face) >= compareEdge)
                 {
                     hasSuit = true;
@@ -303,6 +303,7 @@ namespace DaySign
                     }
                     else
                     {
+                        compareLock = false;
                         nowFace = new FaceDataStruct();
                     }
                 }
