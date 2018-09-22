@@ -26,7 +26,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -74,28 +74,30 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessData.cs" />
-    <Compile Include="Error.cs" />
-    <Compile Include="FaceData.cs" />
-    <Compile Include="IStringStruct.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="LogBase.cs" />
-    <Compile Include="StringExpand.cs" />
-    <Compile Include="Data.cs" />
-    <Compile Include="DataSave.cs" />
-    <Compile Include="EnumExpand.cs" />
-    <Compile Include="FileData.cs" />
-    <Compile Include="Debug.cs" />
-    <Compile Include="EmguCamera.cs" />
-    <Compile Include="Face.cs" />
-    <Compile Include="FaceAPI.cs" />
+    <Compile Include="Script\DataSave\AccessData.cs" />
+    <Compile Include="Script\Expand\DrawExpand.cs" />
+    <Compile Include="Script\Expand\ConvertExpand.cs" />
+    <Compile Include="Script\Log\Error.cs" />
+    <Compile Include="Script\Data\FaceData.cs" />
+    <Compile Include="Script\Data\IStringStruct.cs" />
+    <Compile Include="Script\Log\Log.cs" />
+    <Compile Include="Script\Log\LogBase.cs" />
+    <Compile Include="Script\Expand\StringExpand.cs" />
+    <Compile Include="Script\Data\Data.cs" />
+    <Compile Include="Script\DataSave\DataSave.cs" />
+    <Compile Include="Script\Expand\EnumExpand.cs" />
+    <Compile Include="Script\Expand\FileExpand.cs" />
+    <Compile Include="Script\Debug.cs" />
+    <Compile Include="Script\Camera\EmguCamera.cs" />
+    <Compile Include="Script\Face\Face.cs" />
+    <Compile Include="Script\Face\FaceAPI.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manager.cs" />
+    <Compile Include="Script\Manager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -150,5 +152,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

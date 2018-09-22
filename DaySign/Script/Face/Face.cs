@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DaySign.Script.Expand;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -101,17 +102,19 @@ namespace DaySign
 
     }
 
+    //检查人脸
     public class Face_FD : Face
     {
         protected override InitialFaceEngineAPI InitialAPI => new InitialFaceEngineAPI(FaceAPI.InitialFaceEngine_FD);
 
         protected override UninitialFaceEngineAPI UninitialAPI => new UninitialFaceEngineAPI(FaceAPI.AFD_FSDK_UninitialFaceEngine);
 
-        public bool CheckFace(ref Bitmap bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr)
+        //检查是否存在人脸，imageDataPtr必须在offInputPtr用完后释放掉
+        public bool CheckFace(Bitmap bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr, out IntPtr imageDataPtr)
         {
             byte[] imageData = BitmapToBmp(bitmap, out int width, out int height, out int pitch);
             
-            IntPtr imageDataPtr = Marshal.AllocHGlobal(imageData.Length);
+            imageDataPtr = Marshal.AllocHGlobal(imageData.Length);
             Marshal.Copy(imageData, 0, imageDataPtr, imageData.Length);
 
             ASVLOFFSCREEN offInput = new ASVLOFFSCREEN();
@@ -128,45 +131,87 @@ namespace DaySign
             faceRes = new AFD_FSDK_FACERES();
             IntPtr faceResPtr = Marshal.AllocHGlobal(Marshal.SizeOf(faceRes));
             int detectResult = FaceAPI.AFD_FSDK_StillImageFaceDetection(detectEngine, offInputPtr, ref faceResPtr);
+
             faceRes = (AFD_FSDK_FACERES)Marshal.PtrToStructure(faceResPtr, typeof(AFD_FSDK_FACERES));
-            
             MRECT rect = (MRECT)Marshal.PtrToStructure(faceRes.rcFace, typeof(MRECT));
             
             bool ret = faceRes.nFace > 0;
-            if (ret)
-            {
-                bitmap = DrawRect(bitmap, rect, Color.Red);
-            }
+
+            imageData = null;
+
+            //Marshal.FreeHGlobal(imageDataPtr); //这个指针内存泄漏了
+
+            //Marshal.FreeHGlobal(faceResPtr); 
+            //GC.Collect();
             return ret;
         }
 
-        public bool CheckFace(ref Bitmap bitmap)
+        public bool CheckFace(Bitmap bitmap)
         {
-            return CheckFace(ref bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr);
+            return CheckFace(bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr, out IntPtr imageDataPtr);
         }
 
-        static Bitmap DrawRect(Bitmap bitmap, MRECT rect, Color color)
+        public bool CheckFace(Bitmap bitmap, out AFD_Face face)
         {
-            Graphics graphics = Graphics.FromImage(bitmap);
-            Pen pen = new Pen(color, bitmap.Width / 200 + bitmap.Height / 200);
-            graphics.DrawRectangle(pen, new Rectangle(new Point(rect.left, rect.top), 
-                new Size(Math.Abs(rect.right - rect.left), Math.Abs(rect.bottom - rect.top))));
-            graphics.Dispose();
-            return bitmap;
+            bool ret = CheckFace(bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr, out IntPtr imageDataPtr);
+            face = faceRes.DeIntPtr();
+            return ret;
         }
+
 
     }
 
+    //获取人脸信息和匹配人脸
     public class Face_FR : Face
     {
         protected override InitialFaceEngineAPI InitialAPI => new InitialFaceEngineAPI(FaceAPI.InitialFaceEngine_FR);
 
         protected override UninitialFaceEngineAPI UninitialAPI => new UninitialFaceEngineAPI(FaceAPI.AFR_FSDK_UninitialEngine);
 
+        public byte[] GetFaceData(AFD_FSDK_FACERES faceRes, IntPtr offInputPtr)
+        {
+            AFR_FSDK_FaceInput faceinput = new AFR_FSDK_FaceInput();
+            faceinput.lOrient = (int)Marshal.PtrToStructure(faceRes.lfaceOrient, typeof(int));
+            MRECT rect = (MRECT)Marshal.PtrToStructure(faceRes.rcFace, typeof(MRECT));
+            faceinput.rcFace = rect;
+
+            IntPtr faceInputPtr = Marshal.AllocHGlobal(Marshal.SizeOf(faceinput));
+            Marshal.StructureToPtr(faceinput, faceInputPtr, false);
+
+            AFR_FSDK_FaceModel faceModel = new AFR_FSDK_FaceModel();
+            IntPtr faceModelPtr = Marshal.AllocHGlobal(Marshal.SizeOf(faceModel));
+
+            int ret = FaceAPI.AFR_FSDK_ExtractFRFeature
+                (detectEngine, offInputPtr,
+                faceInputPtr, faceModelPtr);
+
+            if (ret != 0) //返回值为0代表获取成功
+            {
+                Log.AddLog("获取不到人脸信息。");
+                return null;
+            }
+
+            faceModel = (AFR_FSDK_FaceModel)Marshal.PtrToStructure(faceModelPtr, typeof(AFR_FSDK_FaceModel));
+
+            byte[] byteData = new byte[faceModel.lFeatureSize];
+            Marshal.Copy(faceModel.pbFeature, byteData, 0, faceModel.lFeatureSize);
+
+            Marshal.FreeHGlobal(faceModelPtr);
+            Marshal.FreeHGlobal(faceInputPtr);
+
+            return byteData;
+        }
+
+
+        [Obsolete]
         public byte[] GetFaceData(Bitmap bitmap, Face_FD face_FD)
         {
-            bool isFace = face_FD.CheckFace(ref bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr);
-            if (!isFace) return null;
+            bool isFace = face_FD.CheckFace(bitmap, out AFD_FSDK_FACERES faceRes, out IntPtr offInputPtr, out IntPtr imageDataPtr);
+            if (!isFace)
+            {
+                Error.Log(ErrorType.inputError);
+                return null;
+            }
                 
             AFR_FSDK_FaceInput faceinput = new AFR_FSDK_FaceInput();
             faceinput.lOrient = (int)Marshal.PtrToStructure(faceRes.lfaceOrient, typeof(int));
@@ -181,13 +226,20 @@ namespace DaySign
 
             int ret = FaceAPI.AFR_FSDK_ExtractFRFeature(detectEngine, offInputPtr, 
                 faceInputPtr, faceModelPtr);
-            if (ret != 0) return null; //返回值为0代表获取成功
+
+            if (ret != 0) //返回值为0代表获取成功
+            {
+                Log.AddLog("获取不到人脸信息。");
+                return null; 
+            }
 
             faceModel = (AFR_FSDK_FaceModel)Marshal.PtrToStructure(faceModelPtr, typeof(AFR_FSDK_FaceModel));
             Marshal.FreeHGlobal(faceModelPtr);
 
             byte[] byteData = new byte[faceModel.lFeatureSize];
             Marshal.Copy(faceModel.pbFeature, byteData, 0, faceModel.lFeatureSize);
+
+            Marshal.FreeHGlobal(faceInputPtr);
 
             return byteData;
         }
@@ -216,8 +268,14 @@ namespace DaySign
             IntPtr secondPtr = Marshal.AllocHGlobal(Marshal.SizeOf(beFaceModel));
             Marshal.StructureToPtr(beFaceModel, secondPtr, false);
 
-            float result = 0; //大约0.7，是同个人
+            float result = 0; //大约0.55，是同个人
             int ret = FaceAPI.AFR_FSDK_FacePairMatching(detectEngine, firstPtr, secondPtr, ref result);
+
+            Marshal.FreeHGlobal(dataPtr);
+            Marshal.FreeHGlobal(beDataPtr);
+            Marshal.FreeHGlobal(firstPtr);
+            Marshal.FreeHGlobal(secondPtr);
+
             return result;
         }
     }

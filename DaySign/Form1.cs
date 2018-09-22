@@ -36,7 +36,7 @@ namespace DaySign
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Manager.GetManager().CompareFace(pictureBox1);
+            //Manager.GetManager().CompareFace(pictureBox1);
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -52,7 +52,7 @@ namespace DaySign
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Manager.GetManager().SetShowPhotoTimerTick(timer1, pictureBox1);
+            Manager.GetManager().SetShowPhotoTimerTick(videoTimer, 33, faceTimer, 100, pictureBox1);
         }
     }
 }

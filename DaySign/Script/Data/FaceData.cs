@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DaySign
 {
-    struct FaceDataStruct //字段名需要和数据的头信息相同
+    public struct FaceDataStruct //字段名需要和数据的头信息相同
     {
         public int _uid;
         public string _class;

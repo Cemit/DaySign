@@ -31,7 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.videoTimer = new System.Windows.Forms.Timer(this.components);
+            this.faceTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,10 +56,15 @@
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
-            // timer1
+            // videoTimer
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.videoTimer.Enabled = true;
+            this.videoTimer.Interval = 200;
+            this.videoTimer.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // faceTimer
+            // 
+            this.faceTimer.Enabled = true;
             // 
             // Form1
             // 
@@ -79,7 +85,8 @@
 
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer videoTimer;
+        private System.Windows.Forms.Timer faceTimer;
     }
 }
 

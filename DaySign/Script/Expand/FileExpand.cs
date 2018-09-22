@@ -14,7 +14,7 @@ namespace DaySign
         head, end
     }
 
-    static class FileData
+    static class FileExpand
     {
         static public void SaveData(this Image image, string fileName)
         {

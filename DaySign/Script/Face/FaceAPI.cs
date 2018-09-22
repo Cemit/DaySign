@@ -8,9 +8,16 @@ namespace DaySign
 {
     public struct AFD_FSDK_FACERES
     {
-        public int nFace; //人脸矩形框信息
-        public IntPtr rcFace; //人脸个数
+        public int nFace; //人脸个数
+        public IntPtr rcFace; //人脸矩形框信息
         public IntPtr lfaceOrient; //人脸角度信息
+    }
+
+    public struct AFD_Face
+    {
+        public int faceNumber; //人脸个数
+        public int faceOrient; //人脸角度
+        public MRECT rect; //人脸所在的位置
     }
 
     public struct MRECT
