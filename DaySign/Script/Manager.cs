@@ -15,9 +15,9 @@ namespace DaySign
         static Manager managerObj; //单例
         static bool isCreate = false;
 
-        const string APPID = "En1GxY7XKxnLFZ469NJBAk2gUJrCsPEUdmKDgS6uzqRf";
-        const string KEYFD = "GkEJpaSAqMVEiggg6VBJVBTXCx5zf3V6Ro4QWCKt4xLQ";
-        const string KEYFR = "GkEJpaSAqMVEiggg6VBJVBU1rZ8hcTudSnb4gJqjkH4h";
+        const string APPID = "";
+        const string KEYFD = "";
+        const string KEYFR = "";
         const string SQLSTR = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=DaySign.mdb";
         const string VIDEO_CACHE = "Video.jpg";
         const string PATH = "Data";
